@@ -93,8 +93,7 @@ def _filter_max_length(example, max_length=256):
 
 def _get_example_length(example):
   """Returns the maximum length between the example inputs and targets."""
-  length = tf.maximum(tf.shape(example[0])[0], tf.shape(example[1])[0])
-  return length
+  return tf.maximum(tf.shape(example[0])[0], tf.shape(example[1])[0])
 
 
 def _create_min_max_boundaries(
@@ -167,8 +166,7 @@ def _batch_examples(dataset, batch_size, max_length):
     conditions_c = tf.logical_and(
         tf.less_equal(buckets_min, seq_length),
         tf.less(seq_length, buckets_max))
-    bucket_id = tf.reduce_min(tf.where(conditions_c))
-    return bucket_id
+    return tf.reduce_min(tf.where(conditions_c))
 
   def window_size_fn(bucket_id):
     """Return number of examples to be grouped when given a bucket id."""

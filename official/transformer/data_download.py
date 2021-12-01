@@ -342,18 +342,16 @@ def shuffle_records(fname):
 
 def dict_to_example(dictionary):
   """Converts a dictionary of string->int to a tf.Example."""
-  features = {}
-  for k, v in six.iteritems(dictionary):
-    features[k] = tf.train.Feature(int64_list=tf.train.Int64List(value=v))
+  features = {
+      k: tf.train.Feature(int64_list=tf.train.Int64List(value=v))
+      for k, v in six.iteritems(dictionary)
+  }
   return tf.train.Example(features=tf.train.Features(feature=features))
 
 
 def all_exist(filepaths):
   """Returns true if all files in the list exist."""
-  for fname in filepaths:
-    if not tf.gfile.Exists(fname):
-      return False
-  return True
+  return all(tf.gfile.Exists(fname) for fname in filepaths)
 
 
 def make_dir(path):

@@ -112,14 +112,15 @@ def process_results(metrics):
       success_count += 1
       success_npe += metric_dict['npe']
     total_npe += metric_dict['npe']
-  stats = {}
-  stats['max_npe'] = max_npe
-  stats['max_repetitions'] = max_repetitions
-  stats['repetitions'] = count
-  stats['successes'] = success_count  # successful reps
-  stats['failures'] = count - success_count  # failed reps
-  stats['success_npe'] = success_npe
-  stats['total_npe'] = total_npe
+  stats = {
+      'max_npe': max_npe,
+      'max_repetitions': max_repetitions,
+      'repetitions': count,
+      'successes': success_count,
+      'failures': count - success_count,
+      'success_npe': success_npe,
+      'total_npe': total_npe,
+  }
   if success_count:
     # Only successful runs counted.
     stats['avg_success_npe'] = stats['success_npe'] / float(success_count)

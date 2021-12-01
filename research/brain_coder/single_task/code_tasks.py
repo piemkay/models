@@ -153,10 +153,7 @@ class MultiIOTaskManager(object):
     self.time_penalty = (
         1.0 / (max_code_length - min_code_length)
         if max_code_length > min_code_length else 0.0)
-    if reward_fn is None:
-      self.reward_fn = r.absolute_distance_reward
-    else:
-      self.reward_fn = reward_fn
+    self.reward_fn = r.absolute_distance_reward if reward_fn is None else reward_fn
     self.input_type = (
         task.input_type if hasattr(task, 'input_type') else misc.IOType.integer)
     self.output_type = (
@@ -288,10 +285,7 @@ class PrintTask(BaseTask):
     super(type(self), self).__init__()
     self.base = base  # base includes EOS
     self.eos = 0
-    if fixed_string:
-      self.fixed_string = fixed_string
-    else:
-      self.fixed_string = [1, 2, 3, 0]  # ABC<EOS>
+    self.fixed_string = fixed_string or [1, 2, 3, 0]
     self.min_length = self.max_length = len(self.fixed_string)
 
   def make_io_set(self):
@@ -539,12 +533,13 @@ class CountCharTaskV2(BaseTask):
   def _make_io_examples(self, n, max_len):
     """Generate test cases for the task."""
     rand = random.Random(6849275409234)  # Test cases are fixed, but varied.
-    io_examples = []
-    io_examples.append(([10, 0], [0]))
-    io_examples.append(([1, 0], [1]))
-    io_examples.append(([1, 1, 0], [2]))
-    io_examples.append(([9, 4, 19, 11, 5, 0], [0]))
-    io_examples.append(([24, 11, 26, 1, 15, 0], [1]))
+    io_examples = [
+        ([10, 0], [0]),
+        ([1, 0], [1]),
+        ([1, 1, 0], [2]),
+        ([9, 4, 19, 11, 5, 0], [0]),
+        ([24, 11, 26, 1, 15, 0], [1]),
+    ]
     for _ in xrange(n - 5):
       length = rand.randrange(2, max_len + 1)
       num_chars = rand.randrange(0, max_len + 1)
@@ -998,16 +993,17 @@ class JudgeRouteCircleTask(BaseTask):
   def _make_io_examples(self, n, max_len):
     """Generate test cases for the task."""
     rand = random.Random(6849275409234)  # Test cases are fixed, but varied.
-    io_examples = []
-    io_examples.append(([0], [1]))
-    io_examples.append(([4, 2, 0], [1]))
-    io_examples.append(([2, 4, 0], [1]))
-    io_examples.append(([3, 1, 0], [1]))
-    io_examples.append(([1, 3, 0], [1]))
-    io_examples.append(([1, 0], [0]))
-    io_examples.append(([2, 0], [0]))
-    io_examples.append(([3, 0], [0]))
-    io_examples.append(([4, 0], [0]))
+    io_examples = [
+        ([0], [1]),
+        ([4, 2, 0], [1]),
+        ([2, 4, 0], [1]),
+        ([3, 1, 0], [1]),
+        ([1, 3, 0], [1]),
+        ([1, 0], [0]),
+        ([2, 0], [0]),
+        ([3, 0], [0]),
+        ([4, 0], [0]),
+    ]
     for _ in xrange(n):
       is_true = rand.randrange(2)
       length = rand.randrange(1, max_len + 1)
@@ -1071,7 +1067,7 @@ class MultiplyTask(BaseTask):
     self.output_type = misc.IOType.integer
 
   def _factors(self, n):
-    return set(i for i in range(1, int(n**0.5) + 1) if n % i == 0)
+    return {i for i in range(1, int(n**0.5) + 1) if n % i == 0}
 
   def _make_io_examples(self, n):
     """Generate test cases for the task."""

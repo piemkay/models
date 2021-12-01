@@ -76,8 +76,14 @@ class ResultsLibTest(tf.test.TestCase):
 
       # Check results. Order does not matter here.
       self.assertEqual(
-          set(freeze(r) for r in results_list),
-          set(freeze({'foo': i, 'bar': 1 + i * 2}) for i in xrange(n)))
+          {freeze(r)
+           for r in results_list},
+          {freeze({
+              'foo': i,
+              'bar': 1 + i * 2
+          })
+           for i in xrange(n)},
+      )
 
 
 if __name__ == '__main__':

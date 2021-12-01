@@ -159,13 +159,11 @@ def _process_file_shard(tce_table, file_name):
                   shard_size, shard_name)
 
   with tf.python_io.TFRecordWriter(file_name) as writer:
-    num_processed = 0
-    for _, tce in tce_table.iterrows():
+    for num_processed, (_, tce) in enumerate(tce_table.iterrows(), start=1):
       example = _process_tce(tce)
       if example is not None:
         writer.write(example.SerializeToString())
 
-      num_processed += 1
       if not num_processed % 10:
         tf.logging.info("%s: Processed %d/%d items in shard %s", process_name,
                         num_processed, shard_size, shard_name)

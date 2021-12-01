@@ -154,9 +154,8 @@ def mutate_single(code_tokens, mutation_rate):
   if code_tokens[-1] == '_':
     # Do this check to ensure that the code strings have not been corrupted.
     raise ValueError('`code_tokens` must end with EOS symbol.')
-  else:
-    cs = Individual(code_tokens)
-    eos = []
+  cs = Individual(code_tokens)
+  eos = []
   mutated = False
   for pos in range(len(cs)):
     if random.random() < mutation_rate:
@@ -181,12 +180,7 @@ def mutate_single(code_tokens, mutation_rate):
           cs = [new_char] + cs[:pos] + cs[pos + 1:]
       elif x < 0.75:
         # Shift rotate mutation (position invariant).
-        if random.random() < 0.50:
-          # Shift down.
-          cs = cs[1:] + [cs[0]]
-        else:
-          # Shift up.
-          cs = [cs[-1]] + cs[:-1]
+        cs = cs[1:] + [cs[0]] if random.random() < 0.50 else [cs[-1]] + cs[:-1]
       else:
         # Replacement mutation.
         cs = cs[:pos] + [new_char] + cs[pos + 1:]

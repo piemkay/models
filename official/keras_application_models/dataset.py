@@ -41,8 +41,7 @@ def generate_synthetic_input_dataset(model, batch_size):
   image_shape = (batch_size,) + image_size + (_NUM_CHANNELS,)
   label_shape = (batch_size, _NUM_CLASSES)
 
-  dataset = model_helpers.generate_synthetic_data(
+  return model_helpers.generate_synthetic_data(
       input_shape=tf.TensorShape(image_shape),
       label_shape=tf.TensorShape(label_shape),
   )
-  return dataset

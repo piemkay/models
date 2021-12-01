@@ -38,10 +38,10 @@ autoencoder = MaskingNoiseAutoencoder(
     optimizer=tf.train.AdamOptimizer(learning_rate=0.001),
     dropout_probability=0.95)
 
+total_batch = int(n_samples / batch_size)
 for epoch in range(training_epochs):
     avg_cost = 0.
-    total_batch = int(n_samples / batch_size)
-    for i in range(total_batch):
+    for _ in range(total_batch):
         batch_xs = get_random_block_from_data(X_train, batch_size)
 
         cost = autoencoder.partial_fit(batch_xs)

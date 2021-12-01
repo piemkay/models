@@ -655,7 +655,7 @@ class LMAgent(object):
       tf.Summary op.
     """
     tr = np.asarray(total_rewards)
-    reward_summary = tf.Summary(value=[
+    return tf.Summary(value=[
         tf.Summary.Value(
             tag='reward/avg',
             simple_value=np.mean(tr)),
@@ -668,7 +668,6 @@ class LMAgent(object):
         tf.Summary.Value(
             tag='reward/min',
             simple_value=np.min(tr))])
-    return reward_summary
 
   def _iw_summary(self, session, replay_iw, replay_log_probs,
                   norm_replay_weights, on_policy_iw,
@@ -724,14 +723,13 @@ class LMAgent(object):
     # = 1 / ((1-a) + a*q/p)
     a = float(self.replay_alpha)
     a_com = 1.0 - a  # compliment of a
-    importance_weights = np.asarray(
+    return np.asarray(
         [1.0 / (a_com
                 + a * exp((log(replay_weight) - log_total_replay_weight)
                           - log_p))
          if replay_weight > 0 else 1.0 / a_com
          for log_p, replay_weight
          in zip(policy_log_probs, replay_weights)])
-    return importance_weights
 
   def update_step(self, session, rl_batch, train_op, global_step_op,
                   return_gradients=False):

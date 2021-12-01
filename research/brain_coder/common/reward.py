@@ -85,13 +85,8 @@ def absolute_distance(pred, target, base, scalar_diff_fn=abs_diff):
   Returns:
     List distance between `pred` and `target`.
   """
-  d = 0
-  for i, target_t in enumerate(target):
-    if i >= len(pred):
-      d += base  # A missing slot is worth the max distance.
-    else:
-      # Add element-wise distance for this slot.
-      d += scalar_diff_fn(pred[i], target_t, base)
+  d = sum(base if i >= len(pred) else scalar_diff_fn(pred[i], target_t, base)
+          for i, target_t in enumerate(target))
   if len(pred) > len(target):
     # Each extra slot is worth the max distance.
     d += (len(pred) - len(target)) * base
@@ -374,14 +369,11 @@ class FloorRewardManager(RewardManager):
     return reward
 
   def __call__(self, seq):
-    if len(seq) > len(self._target):  # Output is too long.
-      if not self._too_long_penality_given:
-        self._too_long_penality_given = True
-        reward = -1.0
-      else:
-        reward = 0.0  # Don't give this penalty more than once.
-      return reward
-
+    if len(seq) > len(self._target):# Output is too long.
+      if self._too_long_penality_given:
+        return 0.0
+      self._too_long_penality_given = True
+      return -1.0
     reward = self._delta_reward(seq)
     if self._too_long_penality_given:
       reward += 1.0  # Return the subtracted reward.

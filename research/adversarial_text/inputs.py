@@ -91,11 +91,10 @@ class VatxtInput(object):
   def state(self):
     # LSTM tuple states
     state_names = _get_tuple_state_names(self._num_states, self._state_name)
-    return tuple([
+    return tuple(
         tf.contrib.rnn.LSTMStateTuple(
             self._batch.state(c_name), self._batch.state(h_name))
-        for c_name, h_name in state_names
-    ])
+        for c_name, h_name in state_names)
 
   def save_state(self, value):
     # LSTM tuple states
@@ -109,9 +108,8 @@ class VatxtInput(object):
 
 def _get_tuple_state_names(num_states, base_name):
   """Returns state names for use with LSTM tuple state."""
-  state_names = [('{}_{}_c'.format(i, base_name), '{}_{}_h'.format(
+  return [('{}_{}_c'.format(i, base_name), '{}_{}_h'.format(
       i, base_name)) for i in range(num_states)]
-  return state_names
 
 
 def _split_bidir_tokens(batch):
@@ -230,7 +228,7 @@ def _read_and_batch(data_dir,
     for rev_c_state, rev_h_state in rev_state_names:
       initial_states[rev_c_state] = tf.zeros(state_size)
       initial_states[rev_h_state] = tf.zeros(state_size)
-  batch = tf.contrib.training.batch_sequences_with_states(
+  return tf.contrib.training.batch_sequences_with_states(
       input_key=seq_key,
       input_sequences=sequence,
       input_context=ctx,
@@ -243,7 +241,6 @@ def _read_and_batch(data_dir,
       capacity=batch_size * 10,
       make_keys_unique=True,
       make_keys_unique_seed=29392)
-  return batch
 
 
 def inputs(data_dir=None,

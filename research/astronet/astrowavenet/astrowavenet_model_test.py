@@ -175,10 +175,8 @@ class AstrowavenetTest(tf.test.TestCase):
         num_preprocess_params + num_block_params + num_postprocess_params +
         num_dist_params)
 
-    total_retrieved_params = 0
-    for v in tf.trainable_variables():
-      total_retrieved_params += np.prod(v.shape)
-
+    total_retrieved_params = sum(
+        np.prod(v.shape) for v in tf.trainable_variables())
     self.assertEqual(total_params, total_retrieved_params)
 
     # Verify model runs and outputs losses of correct shape.

@@ -39,7 +39,7 @@ class Autoencoder(object):
 
 
     def _initialize_weights(self):
-        all_weights = dict()
+        all_weights = {}
         initializer = tf.contrib.layers.xavier_initializer()
         # Encoding network weights
         encoder_weights = []
@@ -83,9 +83,7 @@ class Autoencoder(object):
 
     def getWeights(self):
         raise NotImplementedError
-        return self.sess.run(self.weights)
 
     def getBiases(self):
         raise NotImplementedError
-        return self.sess.run(self.weights)
 

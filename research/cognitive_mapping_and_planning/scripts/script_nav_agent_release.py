@@ -185,7 +185,8 @@ def _test(args):
   m = utils.Foo()
   m.tf_graph = tf.Graph()
 
-  rng_data_seed = 0; rng_action_seed = 0;
+  rng_data_seed = 0
+  rng_action_seed = 0;
   R = lambda: nav_env.get_multiplexer_class(args.navtask, rng_data_seed)
   with m.tf_graph.as_default():
     with tf.container(container_name):
@@ -222,15 +223,15 @@ def _test(args):
                      time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime()),
                      last_checkpoint)
 
-        if (args.control.only_eval_when_done == False or 
-            checkpoint_iter >= args.solver.max_steps):
+        if (args.control.only_eval_when_done == False
+            or checkpoint_iter >= args.solver.max_steps):
           start = time.time()
           logging.info('Starting evaluation at %s using checkpoint %s.', 
                        time.strftime('%Y-%m-%d-%H:%M:%S', time.localtime()),
                        last_checkpoint)
 
           with sv.managed_session(args.solver.master, config=config,
-                                  start_standard_services=False) as sess:
+                                            start_standard_services=False) as sess:
             sess.run(m.init_op)
             sv.saver.restore(sess, last_checkpoint)
             sv.start_queue_runners(sess)
@@ -241,11 +242,7 @@ def _test(args):
             vals, _ = tf_utils.train_step_custom_online_sampling(
                 sess, None, m.global_step_op, train_step_kwargs,
                 mode=args.control.test_mode)
-            should_stop = False
-
-            if checkpoint_iter >= args.solver.max_steps: 
-              should_stop = True
-
+            should_stop = checkpoint_iter >= args.solver.max_steps
             if should_stop:
               break
 

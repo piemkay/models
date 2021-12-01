@@ -95,8 +95,7 @@ class Transformer(object):
       if targets is None:
         return self.predict(encoder_outputs, attention_bias)
       else:
-        logits = self.decode(targets, encoder_outputs, attention_bias)
-        return logits
+        return self.decode(targets, encoder_outputs, attention_bias)
 
   def encode(self, inputs, attention_bias):
     """Generate continuous representation for inputs.
@@ -161,8 +160,7 @@ class Transformer(object):
       outputs = self.decoder_stack(
           decoder_inputs, encoder_outputs, decoder_self_attention_bias,
           attention_bias)
-      logits = self.embedding_softmax_layer.linear(outputs)
-      return logits
+      return self.embedding_softmax_layer.linear(outputs)
 
   def _get_symbols_to_logits_fn(self, max_decode_length):
     """Returns a decoding function that calculates logits of the next tokens."""

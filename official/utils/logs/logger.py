@@ -370,9 +370,7 @@ def _collect_tensorflow_environment_variables(run_info):
 # which is not exposed for import.
 def _collect_cpu_info(run_info):
   """Collect the CPU information for the local environment."""
-  cpu_info = {}
-
-  cpu_info["num_cores"] = multiprocessing.cpu_count()
+  cpu_info = {'num_cores': multiprocessing.cpu_count()}
 
   try:
     # Note: cpuinfo is not installed in the TensorFlow OSS tree.

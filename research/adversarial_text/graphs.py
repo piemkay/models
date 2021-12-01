@@ -533,10 +533,11 @@ class VatxtBidirModel(VatxtModel):
     if inputs is None:
       inputs = self.cl_inputs
 
-    out = []
-    for (layer_name, emb, inp) in zip(['lstm', 'lstm_reverse'], embedded,
-                                      inputs):
-      out.append(self.layers[layer_name](emb, inp.state, inp.length))
+    out = [
+        self.layers[layer_name](emb, inp.state, inp.length)
+        for (layer_name, emb,
+             inp) in zip(['lstm', 'lstm_reverse'], embedded, inputs)
+    ]
     lstm_outs, next_states = zip(*out)
 
     # Concatenate output of forward and reverse LSTMs
@@ -659,9 +660,9 @@ def _get_vocab_freqs():
       if len(freqs) != FLAGS.vocab_size:
         raise ValueError('Frequency file length %d != vocab size %d' %
                          (len(freqs), FLAGS.vocab_size))
+  elif FLAGS.vocab_freq_path:
+    raise ValueError('vocab_freq_path not found')
   else:
-    if FLAGS.vocab_freq_path:
-      raise ValueError('vocab_freq_path not found')
     freqs = [1] * FLAGS.vocab_size
 
   return freqs

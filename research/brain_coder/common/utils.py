@@ -493,8 +493,9 @@ class RouletteWheel(object):
       raise ValueError('Number of objects does not equal number of keys.')
     if len(objs) != len(weights):
       raise ValueError('Number of objects does not equal number of weights.')
-    return sum([self.add(obj, weights[i], key=keys[i] if keys else None)
-                for i, obj in enumerate(objs)])
+    return sum(
+        self.add(obj, weights[i], key=keys[i] if keys else None)
+        for i, obj in enumerate(objs))
 
   def sample(self):
     """Spin the roulette wheel.

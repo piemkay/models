@@ -142,6 +142,4 @@ def build_shake_shake_model(images, num_classes, hparams, is_training):
   x = tf.nn.relu(x)
   x = ops.global_avg_pool(x)
 
-  # Fully connected
-  logits = ops.fc(x, num_classes)
-  return logits
+  return ops.fc(x, num_classes)

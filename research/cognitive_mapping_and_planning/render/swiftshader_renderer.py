@@ -105,11 +105,7 @@ class Shape():
     self.materials = materials
 
   def _filter_triangles(self, meshes):
-    select = []
-    for i in range(len(meshes)):
-      if meshes[i].primitivetypes == 4:
-        select.append(i)
-    return select
+    return [i for i in range(len(meshes)) if meshes[i].primitivetypes == 4]
 
   def flip_shape(self):
     for m in self.meshes:
@@ -121,18 +117,12 @@ class Shape():
       # m.vertices[:,[0,1]] = m.vertices[:,[1,0]]
 
   def get_vertices(self):
-    vs = []
-    for m in self.meshes:
-      vs.append(m.vertices)
+    vs = [m.vertices for m in self.meshes]
     vss = np.concatenate(vs, axis=0)
     return vss, vs
 
   def get_faces(self):
-    vs = []
-    for m in self.meshes:
-      v = m.faces
-      vs.append(v)
-    return vs
+    return [m.faces for m in self.meshes]
 
   def get_number_of_meshes(self):
     return len(self.meshes)
@@ -227,18 +217,14 @@ class SwiftshaderRenderer():
   def create_shaders(self, v_shader_file, f_shader_file):
     v_shader = glCreateShader(GL_VERTEX_SHADER)
     with open(v_shader_file, 'r') as f:
-      ls = ''
-      for l in f:
-        ls = ls + l
+      ls = ''.join(f)
     glShaderSource(v_shader, ls)
     glCompileShader(v_shader);
     assert(glGetShaderiv(v_shader, GL_COMPILE_STATUS) == 1)
 
     f_shader = glCreateShader(GL_FRAGMENT_SHADER)
     with open(f_shader_file, 'r') as f:
-      ls = ''
-      for l in f:
-        ls = ls + l
+      ls = ''.join(f)
     glShaderSource(f_shader, ls)
     glCompileShader(f_shader);
     assert(glGetShaderiv(f_shader, GL_COMPILE_STATUS) == 1)
@@ -259,11 +245,11 @@ class SwiftshaderRenderer():
     self.egl_mapping['vertexs'] = 0
     self.egl_mapping['vertexs_color'] = 1
     self.egl_mapping['vertexs_tc'] = 2
-    
+
     glClearColor(0.0, 0.0, 0.0, 1.0);
     # glEnable(GL_CULL_FACE); glCullFace(GL_BACK);
     glEnable(GL_DEPTH_TEST);
-    
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
 
   def set_camera(self, fov_vertical, z_near, z_far, aspect):
@@ -330,7 +316,6 @@ class SwiftshaderRenderer():
 
     np_rgb_img = None
     np_d_img = None
-    c = 1000.
     if take_screenshot:
       if self.modality == 'rgb':
         screenshot_rgba = np.zeros((self.height, self.width, 4), dtype=np.uint8)
@@ -341,7 +326,9 @@ class SwiftshaderRenderer():
         screenshot_d = np.zeros((self.height, self.width, 4), dtype=np.uint8)
         glReadPixels(0, 0, self.width, self.height, GL_RGBA, GL_UNSIGNED_BYTE, screenshot_d)
         np_d_img = screenshot_d[::-1,:,:3];
-        np_d_img = np_d_img[:,:,2]*(255.*255./c) + np_d_img[:,:,1]*(255./c) + np_d_img[:,:,0]*(1./c)
+        c = 1000.
+        np_d_img = (np_d_img[:, :, 2] * (255.0**2 / c) + np_d_img[:, :, 1] *
+                    (255.0 / c) + np_d_img[:, :, 0] * (1.0 / c))
         np_d_img = np_d_img.astype(np.float32)
         np_d_img[np_d_img == 0] = np.NaN
         np_d_img = np_d_img[:,:,np.newaxis]

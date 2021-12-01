@@ -300,12 +300,8 @@ def main(_):
     ######################
     # Run evaluation     #
     ######################
-    if FLAGS.max_num_batches:
-      num_batches = FLAGS.max_num_batches
-    else:
-      # This ensures that we make a single pass over all of the data.
-      num_batches = math.ceil(dataset.num_samples / float(FLAGS.batch_size))
-
+    num_batches = FLAGS.max_num_batches or math.ceil(
+        dataset.num_samples / float(FLAGS.batch_size))
     if tf.gfile.IsDirectory(FLAGS.checkpoint_path):
       checkpoint_path = tf.train.latest_checkpoint(FLAGS.checkpoint_path)
     else:

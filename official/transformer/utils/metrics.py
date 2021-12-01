@@ -257,12 +257,13 @@ def compute_bleu(reference_corpus, translation_corpus, max_order=4,
     ref_ngram_counts = _get_ngrams_with_counter(references, max_order)
     translation_ngram_counts = _get_ngrams_with_counter(translations, max_order)
 
-    overlap = dict((ngram,
-                    min(count, translation_ngram_counts[ngram]))
-                   for ngram, count in ref_ngram_counts.items())
+    overlap = {
+        ngram: min(count, translation_ngram_counts[ngram])
+        for ngram, count in ref_ngram_counts.items()
+    }
 
-    for ngram in overlap:
-      matches_by_order[len(ngram) - 1] += overlap[ngram]
+    for ngram, value in overlap.items():
+      matches_by_order[len(ngram) - 1] += value
     for ngram in translation_ngram_counts:
       possible_matches_by_order[len(ngram) - 1] += translation_ngram_counts[
           ngram]
@@ -322,12 +323,9 @@ def _get_ngrams(n, text):
   Returns:
     A set of n-grams
   """
-  ngram_set = set()
   text_length = len(text)
   max_index_ngram_start = text_length - n
-  for i in range(max_index_ngram_start + 1):
-    ngram_set.add(tuple(text[i:i + n]))
-  return ngram_set
+  return {tuple(text[i:i + n]) for i in range(max_index_ngram_start + 1)}
 
 
 def rouge_n(eval_sentences, ref_sentences, n=2):
@@ -356,14 +354,8 @@ def rouge_n(eval_sentences, ref_sentences, n=2):
     overlapping_count = len(overlapping_ngrams)
 
     # Handle edge case. This isn't mathematically correct, but it's good enough
-    if eval_count == 0:
-      precision = 0.0
-    else:
-      precision = float(overlapping_count) / eval_count
-    if ref_count == 0:
-      recall = 0.0
-    else:
-      recall = float(overlapping_count) / ref_count
+    precision = 0.0 if eval_count == 0 else float(overlapping_count) / eval_count
+    recall = 0.0 if ref_count == 0 else float(overlapping_count) / ref_count
     f1_scores.append(2.0 * ((precision * recall) / (precision + recall + 1e-8)))
 
   # return overlapping_count / reference_count
@@ -455,7 +447,7 @@ def _lcs(x, y):
     Table of dictionary of coord and len lcs
   """
   n, m = len(x), len(y)
-  table = dict()
+  table = {}
   for i in range(n + 1):
     for j in range(m + 1):
       if i == 0 or j == 0:
@@ -486,5 +478,4 @@ def _f_lcs(llcs, m, n):
   beta = p_lcs / (r_lcs + 1e-12)
   num = (1 + (beta ** 2)) * r_lcs * p_lcs
   denom = r_lcs + ((beta ** 2) * p_lcs)
-  f_lcs = num / (denom + 1e-12)
-  return f_lcs
+  return num / (denom + 1e-12)

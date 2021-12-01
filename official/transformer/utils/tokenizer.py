@@ -14,6 +14,7 @@
 # ==============================================================================
 """Defines Subtokenizer class to encode and decode strings."""
 
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -46,10 +47,9 @@ _UNESCAPE_REGEX = re.compile(r"\\u|\\\\|\\([0-9]+);")
 _UNDEFINED_UNICODE = u"\u3013"
 
 # Set contains all letter and number characters.
-_ALPHANUMERIC_CHAR_SET = set(
-    six.unichr(i) for i in xrange(sys.maxunicode)
+_ALPHANUMERIC_CHAR_SET = {six.unichr(i) for i in xrange(sys.maxunicode)
     if (unicodedata.category(six.unichr(i)).startswith("L") or
-        unicodedata.category(six.unichr(i)).startswith("N")))
+        unicodedata.category(six.unichr(i)).startswith("N"))}
 
 # min_count is the minimum number of times a subtoken must appear in the data
 # before before it is added to the vocabulary. The value is found using binary
@@ -168,13 +168,7 @@ class Subtokenizer(object):
         if s < len(self.subtoken_list)])
     escaped_tokens = escaped_tokens.split("_")
 
-    # All tokens in the vocabulary list have been escaped (see _escape_token())
-    # so each token must be unescaped when decoding.
-    ret = []
-    for token in escaped_tokens:
-      if token:
-        ret.append(_unescape_token(token))
-    return ret
+    return [_unescape_token(token) for token in escaped_tokens if token]
 
 
 def _save_vocab_file(vocab_file, subtoken_list):

@@ -99,7 +99,7 @@ def read_tiny_imagenet_annotations(annotations_filename,
   with tf.gfile.Open(annotations_filename) as f:
     data = pd.read_csv(f, sep='\t', names=column_names)
   for row in data.itertuples():
-    label = one_label if one_label else getattr(row, 'label')
+    label = one_label or getattr(row, 'label')
     full_filename = os.path.join(images_dir, getattr(row, 'filename'))
     result.append((full_filename,
                    ImageMetadata(label=label,

@@ -183,10 +183,11 @@ def compute_tuning_objective(results_list, hparams, trial_name, num_trials):
       'programs_seen_fraction': programs_seen_fraction,
       'avg_programs': np.mean(successful_program_counts),
       'max_possible_programs_per_run': max_programs,
-      'global_step': sum([r['num_batches'] for r in results_list]),
+      'global_step': sum(r['num_batches'] for r in results_list),
       'hparams': hparams.values(),
       'trial_name': trial_name,
-      'num_trials': num_trials}
+      'num_trials': num_trials,
+  }
 
   # Report stats per tasks.
   tasks = [r['task'] for r in results_list]

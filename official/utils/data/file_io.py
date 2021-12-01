@@ -145,7 +145,7 @@ def _serialize_shards(df_shards, columns, pool, writer):
   # inputs in the main process.
   for inp in map_inputs:
     # Check that all fields have the same number of rows.
-    assert len(set([v.shape[0] for v in inp.values()])) == 1
+    assert len({v.shape[0] for v in inp.values()}) == 1
     for val in inp.values():
       assert hasattr(val, "dtype")
       assert hasattr(val.dtype, "kind")
@@ -193,7 +193,7 @@ def write_to_buffer(dataframe, buffer_path, columns, expected_size=None):
       for df_shards in iter_shard_dataframe(df=dataframe,
                                             rows_per_core=_ROWS_PER_CORE):
         _serialize_shards(df_shards, columns, pool, writer)
-        count += sum([len(s) for s in df_shards])
+        count += sum(len(s) for s in df_shards)
         tf.logging.info("{}/{} examples written."
                         .format(str(count).ljust(8), len(dataframe)))
   finally:

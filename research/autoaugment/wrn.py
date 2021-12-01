@@ -131,7 +131,7 @@ def build_wrn_model(images, num_classes, wrn_size):
 
   for block_num in range(1, 4):
     with tf.variable_scope('unit_{}_0'.format(block_num)):
-      activate_before_residual = True if block_num == 1 else False
+      activate_before_residual = block_num == 1
       x = residual_block(
           x,
           filters[block_num - 1],

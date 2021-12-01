@@ -173,6 +173,4 @@ def build_shake_drop_model(images, num_classes, is_training):
   x = ops.batch_norm(x, scope='final_bn')
   x = tf.nn.relu(x)
   x = ops.global_avg_pool(x)
-  # Fully connected
-  logits = ops.fc(x, num_classes)
-  return logits
+  return ops.fc(x, num_classes)

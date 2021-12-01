@@ -78,7 +78,7 @@ class SyntheticDataTest(tf.test.TestCase):
         label_dtype=tf.int32).make_one_shot_iterator().get_next()
 
     with self.test_session() as sess:
-      for n in range(5):
+      for _ in range(5):
         inp, lab = sess.run((input_element, label_element))
         self.assertAllClose(inp, [123., 123., 123., 123., 123.])
         self.assertEquals(lab, 456)

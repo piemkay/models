@@ -64,16 +64,12 @@ def define_tuner_hparam_space(hparam_space_type):
 
   # Discrete hparam space is stored as a dict from hparam name to discrete
   # values.
-  hparam_space = {}
-
-  if hparam_space_type in ('pg', 'pg-topk', 'is'):
-    # Add a floating point parameter named learning rate.
-    hparam_space['lr'] = [1e-5, 1e-4, 1e-3]
-    hparam_space['entropy_beta'] = [0.005, 0.01, 0.05, 0.10]
-  else:  # 'topk'
-    # Add a floating point parameter named learning rate.
-    hparam_space['lr'] = [1e-5, 1e-4, 1e-3]
-    hparam_space['entropy_beta'] = [0.0, 0.005, 0.01, 0.05, 0.10]
+  hparam_space = {
+      'lr': [1e-5, 1e-4, 1e-3],
+      'entropy_beta': [0.005, 0.01, 0.05, 0.10]
+      if hparam_space_type in ('pg', 'pg-topk',
+                               'is') else [0.0, 0.005, 0.01, 0.05, 0.10],
+  }
 
   if hparam_space_type in ('topk', 'pg-topk'):
     # topk tuning will be enabled.
@@ -744,7 +740,7 @@ def run_training(config=None, tuner=None, logdir=None, trial_name=None,
 
   while len(results_list) < FLAGS.num_repetitions:
     run_number = len(results_list)
-    rep_container_name = trial_name if trial_name else 'container'
+    rep_container_name = trial_name or 'container'
     if FLAGS.num_repetitions > 1:
       rep_dir = os.path.join(logdir, 'run_%d' % run_number)
       rep_container_name = rep_container_name + '_run_' + str(run_number)

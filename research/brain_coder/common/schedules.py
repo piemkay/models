@@ -267,12 +267,10 @@ class HardOscillatorSchedule(Schedule):
         return self.low + period_pos * self._slope
       else:
         return self.high
+    elif period_pos < self.half_transition_fraction:
+      return self.high - period_pos * self._slope
     else:
-      # descending
-      if period_pos < self.half_transition_fraction:
-        return self.high - period_pos * self._slope
-      else:
-        return self.low
+      return self.low
 
 
 _NAME_TO_CONFIG = {

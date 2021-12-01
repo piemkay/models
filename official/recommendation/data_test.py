@@ -174,13 +174,10 @@ class BaseTest(tf.test.TestCase):
     raw_shards = tf.gfile.ListDirectory(cache_paths.train_shard_subdir)
     assert len(raw_shards) == num_shards
 
-    sharded_eval_data = []
-    for i in range(2):
-      sharded_eval_data.append(data_async_generation._process_shard(
+    sharded_eval_data = [data_async_generation._process_shard(
           (os.path.join(cache_paths.train_shard_subdir, raw_shards[i]),
            num_items, rconst.NUM_EVAL_NEGATIVES, stat_utils.random_int32(),
-           False, True)))
-
+           False, True)) for i in range(2)]
     if sharded_eval_data[0][0][0] == 1:
       # Order is not assured for this part of the pipeline.
       sharded_eval_data.reverse()

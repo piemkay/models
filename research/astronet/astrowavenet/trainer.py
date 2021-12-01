@@ -122,15 +122,13 @@ def _create_run_config():
         iterations_per_loop=FLAGS.tpu_iterations_per_loop,
         num_shards=FLAGS.tpu_num_shards,
         per_host_input_for_training=(FLAGS.tpu_num_shards <= 8))
-    run_config = tf.contrib.tpu.RunConfig(
+    return tf.contrib.tpu.RunConfig(
         tpu_config=tpu_config, master=FLAGS.master, **run_config_kwargs)
   else:
     if FLAGS.master:
       raise ValueError("FLAGS.master should only be set for TPUEstimator.")
 
-    run_config = tf.estimator.RunConfig(**run_config_kwargs)
-
-  return run_config
+    return tf.estimator.RunConfig(**run_config_kwargs)
 
 
 def _get_file_pattern(mode):
@@ -256,11 +254,11 @@ if __name__ == "__main__":
     save_checkpoints_steps = flag_values["save_checkpoints_steps"]
     save_checkpoints_secs = flag_values["save_checkpoints_secs"]
 
-    if schedule in ["train", "train_and_eval"]:
-      if not (save_checkpoints_steps or save_checkpoints_secs):
-        raise flags.ValidationError(
-            "--schedule='%s' requires --save_checkpoints_steps or "
-            "--save_checkpoints_secs." % schedule)
+    if (schedule in ["train", "train_and_eval"] and not save_checkpoints_steps
+        and not save_checkpoints_secs):
+      raise flags.ValidationError(
+          "--schedule='%s' requires --save_checkpoints_steps or "
+          "--save_checkpoints_secs." % schedule)
 
     return True
 

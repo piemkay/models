@@ -145,9 +145,7 @@ def eval_input_fn(params):
 def predict_input_fn(params):
   batch_size = params["batch_size"]
   data_dir = params["data_dir"]
-  # Take out top 10 samples from test data to make the predictions.
-  ds = dataset.test(data_dir).take(10).batch(batch_size)
-  return ds
+  return dataset.test(data_dir).take(10).batch(batch_size)
 
 
 def main(argv):
@@ -189,9 +187,9 @@ def main(argv):
   if FLAGS.enable_predict:
     predictions = estimator.predict(input_fn=predict_input_fn)
 
-    for pred_dict in predictions:
-      template = ('Prediction is "{}" ({:.1f}%).')
+    template = ('Prediction is "{}" ({:.1f}%).')
 
+    for pred_dict in predictions:
       class_id = pred_dict['class_ids']
       probability = pred_dict['probabilities'][class_id]
 

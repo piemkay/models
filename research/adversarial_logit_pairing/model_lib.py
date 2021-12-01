@@ -183,7 +183,7 @@ def filter_trainable_variables(trainable_scopes):
       tf.GraphKeys.TRAINABLE_VARIABLES)
   non_trainable_vars = [
       v for v in trainable_collection
-      if not any([v.op.name.startswith(s) for s in trainable_scopes])
+      if not any(v.op.name.startswith(s) for s in trainable_scopes)
   ]
   for v in non_trainable_vars:
     trainable_collection.remove(v)

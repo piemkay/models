@@ -295,22 +295,22 @@ class Worker(threading.Thread):
           mem.clear()
           time_count = 0
 
-          if done:  # done and print information
-            Worker.global_moving_average_reward = \
-              record(Worker.global_episode, ep_reward, self.worker_idx,
-                     Worker.global_moving_average_reward, self.result_queue,
-                     self.ep_loss, ep_steps)
-            # We must use a lock to save our model and to print to prevent data races.
-            if ep_reward > Worker.best_score:
-              with Worker.save_lock:
-                print("Saving best model to {}, "
-                      "episode score: {}".format(self.save_dir, ep_reward))
-                self.global_model.save_weights(
-                    os.path.join(self.save_dir,
-                                 'model_{}.h5'.format(self.game_name))
-                )
-                Worker.best_score = ep_reward
-            Worker.global_episode += 1
+        if done:  # done and print information
+          Worker.global_moving_average_reward = \
+            record(Worker.global_episode, ep_reward, self.worker_idx,
+                   Worker.global_moving_average_reward, self.result_queue,
+                   self.ep_loss, ep_steps)
+          # We must use a lock to save our model and to print to prevent data races.
+          if ep_reward > Worker.best_score:
+            with Worker.save_lock:
+              print("Saving best model to {}, "
+                    "episode score: {}".format(self.save_dir, ep_reward))
+              self.global_model.save_weights(
+                  os.path.join(self.save_dir,
+                               'model_{}.h5'.format(self.game_name))
+              )
+              Worker.best_score = ep_reward
+          Worker.global_episode += 1
         ep_steps += 1
 
         time_count += 1
@@ -354,8 +354,7 @@ class Worker(threading.Thread):
                                                                  logits=logits)
     policy_loss *= tf.stop_gradient(advantage)
     policy_loss -= 0.01 * entropy
-    total_loss = tf.reduce_mean((0.5 * value_loss + policy_loss))
-    return total_loss
+    return tf.reduce_mean((0.5 * value_loss + policy_loss))
 
 
 if __name__ == '__main__':

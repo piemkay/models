@@ -116,7 +116,7 @@ def make_inputs_from_np_arrays(features_np, label_np):
   # Create source feature_columns and bucketized_columns.
   def get_bucket_boundaries(feature):
     """Returns bucket boundaries for feature by percentiles."""
-    return np.unique(np.percentile(feature, range(0, 100))).tolist()
+    return np.unique(np.percentile(feature, range(100))).tolist()
   source_columns = [
       tf.feature_column.numeric_column(
           feature_name, dtype=tf.float32,

@@ -66,16 +66,15 @@ def run_keras_model_benchmark(_):
 
   # Get dataset
   dataset_name = "ImageNet"
-  if FLAGS.use_synthetic_data:
-    tf.logging.info("Using synthetic dataset...")
-    dataset_name += "_Synthetic"
-    train_dataset = dataset.generate_synthetic_input_dataset(
-        FLAGS.model, FLAGS.batch_size)
-    val_dataset = dataset.generate_synthetic_input_dataset(
-        FLAGS.model, FLAGS.batch_size)
-  else:
+  if not FLAGS.use_synthetic_data:
     raise ValueError("Only synthetic dataset is supported!")
 
+  tf.logging.info("Using synthetic dataset...")
+  dataset_name += "_Synthetic"
+  train_dataset = dataset.generate_synthetic_input_dataset(
+      FLAGS.model, FLAGS.batch_size)
+  val_dataset = dataset.generate_synthetic_input_dataset(
+      FLAGS.model, FLAGS.batch_size)
   num_gpus = flags_core.get_num_gpus(FLAGS)
 
   distribution = None

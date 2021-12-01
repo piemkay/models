@@ -50,8 +50,7 @@ def get_position_encoding(
   inv_timescales = min_timescale * tf.exp(
       tf.to_float(tf.range(num_timescales)) * -log_timescale_increment)
   scaled_time = tf.expand_dims(position, 1) * tf.expand_dims(inv_timescales, 0)
-  signal = tf.concat([tf.sin(scaled_time), tf.cos(scaled_time)], axis=1)
-  return signal
+  return tf.concat([tf.sin(scaled_time), tf.cos(scaled_time)], axis=1)
 
 
 def get_decoder_self_attention_bias(length):

@@ -35,9 +35,10 @@ def prepare_feed_dict(model, features, labels=None, is_training=None):
   Returns:
     feed_dict: A dictionary of input Tensor to numpy array.
   """
-  feed_dict = {}
-  for feature, tensor in model.time_series_features.items():
-    feed_dict[tensor] = features["time_series_features"][feature]
+  feed_dict = {
+      tensor: features["time_series_features"][feature]
+      for feature, tensor in model.time_series_features.items()
+  }
   for feature, tensor in model.aux_features.items():
     feed_dict[tensor] = features["aux_features"][feature]
 

@@ -20,6 +20,7 @@ the registry in HOOKS, 2) add a corresponding function that parses out necessary
 parameters.
 """
 
+
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -30,9 +31,9 @@ from official.utils.logs import hooks
 from official.utils.logs import logger
 from official.utils.logs import metric_hook
 
-_TENSORS_TO_LOG = dict((x, x) for x in ['learning_rate',
+_TENSORS_TO_LOG = {x: x for x in ['learning_rate',
                                         'cross_entropy',
-                                        'train_accuracy'])
+                                        'train_accuracy']}
 
 
 def get_train_hooks(name_list, use_tpu=False, **kwargs):

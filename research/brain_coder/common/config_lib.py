@@ -124,26 +124,25 @@ class Config(dict):
     """
     key_set = set(self.keys())
     for k, v in self._update_iterator(*args, **kwargs):
-      if k in self:
-        key_set.remove(k)  # This key is updated so exclude from make_default.
-        if isinstance(self[k], Config):
-          if not isinstance(v, dict):
-            raise TypeError('dict required for Config value, got %s' % type(v))
-          self[k].strict_update(v)
-        elif isinstance(self[k], OneOf):
-          if not isinstance(v, dict):
-            raise TypeError('dict required for OneOf value, got %s' % type(v))
-          # Replace OneOf with the chosen config.
-          self[k] = self[k].strict_update(v)
-        else:
-          if not isinstance(v, type(self[k])):
-            raise TypeError('Expecting type %s for key %s, got type %s'
-                            % (type(self[k]), k, type(v)))
-          self[k] = v
-      else:
+      if k not in self:
         raise KeyError(
             'Key %s does not exist. New key creation not allowed in '
             'strict_update.' % k)
+      key_set.remove(k)  # This key is updated so exclude from make_default.
+      if isinstance(self[k], Config):
+        if not isinstance(v, dict):
+          raise TypeError('dict required for Config value, got %s' % type(v))
+        self[k].strict_update(v)
+      elif isinstance(self[k], OneOf):
+        if not isinstance(v, dict):
+          raise TypeError('dict required for OneOf value, got %s' % type(v))
+        # Replace OneOf with the chosen config.
+        self[k] = self[k].strict_update(v)
+      elif not isinstance(v, type(self[k])):
+        raise TypeError('Expecting type %s for key %s, got type %s'
+                        % (type(self[k]), k, type(v)))
+      else:
+        self[k] = v
     self.make_default(key_set)
 
   @staticmethod
@@ -317,9 +316,9 @@ def _next_comma(string, start_index):
   paren_count = 0
   for i in xrange(start_index, len(string)):
     c = string[i]
-    if c == '(' or c == '[' or c == '{':
+    if c in ['(', '[', '{']:
       paren_count += 1
-    elif c == ')' or c == ']' or c == '}':
+    elif c in [')', ']', '}']:
       paren_count -= 1
     if paren_count == 0 and c == ',':
       return i

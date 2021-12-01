@@ -232,11 +232,7 @@ class ImagenetModel(resnet_model.Model):
     """
 
     # For bigger models, we want to use "bottleneck" layers
-    if resnet_size < 50:
-      bottleneck = False
-    else:
-      bottleneck = True
-
+    bottleneck = resnet_size >= 50
     super(ImagenetModel, self).__init__(
         resnet_size=resnet_size,
         bottleneck=bottleneck,

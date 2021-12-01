@@ -167,12 +167,10 @@ def scramble_light_curve(all_time, all_flux, all_quarters, scramble_type):
     scr_time: Time values, re-partitioned to match sizes of the scr_flux lists.
   """
   order = SIMULATED_DATA_SCRAMBLE_ORDERS[scramble_type]
-  scr_flux = []
-  for quarter in order:
-    # Ignore missing quarters in the scramble order.
-    if quarter in all_quarters:
-      scr_flux.append(all_flux[all_quarters.index(quarter)])
-
+  scr_flux = [
+      all_flux[all_quarters.index(quarter)] for quarter in order
+      if quarter in all_quarters
+  ]
   scr_time = util.reshard_arrays(all_time, scr_flux)
 
   return scr_time, scr_flux

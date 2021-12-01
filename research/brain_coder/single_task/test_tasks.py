@@ -29,8 +29,7 @@ class BasicTaskManager(object):
         reason='correct' if correct else 'wrong')
 
   def rl_batch(self, batch_size):
-    reward_fns = [self._score_string] * batch_size
-    return reward_fns
+    return [self._score_string] * batch_size
 
 
 class Trie(object):

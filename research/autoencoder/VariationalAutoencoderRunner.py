@@ -36,11 +36,11 @@ autoencoder = VariationalAutoencoder(
     n_hidden=200,
     optimizer=tf.train.AdamOptimizer(learning_rate = 0.001))
 
+total_batch = int(n_samples / batch_size)
 for epoch in range(training_epochs):
     avg_cost = 0.
-    total_batch = int(n_samples / batch_size)
     # Loop over all batches
-    for i in range(total_batch):
+    for _ in range(total_batch):
         batch_xs = get_random_block_from_data(X_train, batch_size)
 
         # Fit training using batch data

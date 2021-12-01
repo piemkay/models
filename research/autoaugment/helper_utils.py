@@ -33,9 +33,7 @@ def setup_loss(logits, labels):
 
 def decay_weights(cost, weight_decay_rate):
   """Calculates the loss for l2 weight decay and adds it to `cost`."""
-  costs = []
-  for var in tf.trainable_variables():
-    costs.append(tf.nn.l2_loss(var))
+  costs = [tf.nn.l2_loss(var) for var in tf.trainable_variables()]
   cost += tf.multiply(weight_decay_rate, tf.add_n(costs))
   return cost
 
@@ -102,9 +100,8 @@ def get_lr(curr_epoch, hparams, iteration=None):
   """Returns the learning rate during training based on the current epoch."""
   assert iteration is not None
   batches_per_epoch = int(hparams.train_size / hparams.batch_size)
-  lr = cosine_lr(hparams.lr, curr_epoch, iteration, batches_per_epoch,
+  return cosine_lr(hparams.lr, curr_epoch, iteration, batches_per_epoch,
                  hparams.num_epochs)
-  return lr
 
 
 def run_epoch_training(session, model, data_loader, curr_epoch):

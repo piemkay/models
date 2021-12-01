@@ -31,12 +31,7 @@ def ValueErrorOnFalse(ok, *output_args):
     error = output_args[-1]
     raise ValueError(error)
 
-  if n_outputs == 2:
-    output = output_args[0]
-  else:
-    output = output_args[0:-1]
-
-  return output
+  return output_args[0] if n_outputs == 2 else output_args[0:-1]
 
 
 # CLIF postprocessor for a C++ function with signature:

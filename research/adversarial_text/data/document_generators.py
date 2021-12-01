@@ -107,8 +107,7 @@ def documents(dataset='train',
   else:
     raise ValueError('Unrecognized dataset %s' % FLAGS.dataset)
 
-  for doc in docs_gen(dataset, include_unlabeled, include_validation):
-    yield doc
+  yield from docs_gen(dataset, include_unlabeled, include_validation)
 
 
 def tokens(doc):
@@ -137,9 +136,7 @@ def tokens(doc):
     content = content.lower()
 
   if FLAGS.output_char:
-    for char in content:
-      yield char
-
+    yield from content
   else:
     tokens_ = data_utils.split_by_punct(content)
     for i, token in enumerate(tokens_):
@@ -293,9 +290,8 @@ def rcv1_documents(dataset='train',
   tf.logging.info('Generating rcv1 documents...')
 
   datasets = [dataset]
-  if include_unlabeled:
-    if dataset == 'train':
-      datasets.append('unlab')
+  if include_unlabeled and dataset == 'train':
+    datasets.append('unlab')
   for dset in datasets:
     with open(os.path.join(FLAGS.rcv1_input_dir, dset + '.csv')) as db_f:
       reader = csv.reader(db_f)

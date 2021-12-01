@@ -54,10 +54,8 @@ class BaseTest(tf.test.TestCase):
         fake_data.append(i)
 
     _, filename = mkstemp(dir=self.get_temp_dir())
-    data_file = open(filename, 'wb')
-    data_file.write(fake_data)
-    data_file.close()
-
+    with open(filename, 'wb') as data_file:
+      data_file.write(fake_data)
     fake_dataset = tf.data.FixedLengthRecordDataset(
         filename, cifar10_main._RECORD_BYTES)  # pylint: disable=protected-access
     fake_dataset = fake_dataset.map(

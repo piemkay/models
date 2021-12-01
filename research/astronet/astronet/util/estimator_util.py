@@ -66,7 +66,7 @@ class _InputFn(object):
         mode in [tf.estimator.ModeKeys.TRAIN, tf.estimator.ModeKeys.EVAL])
     reverse_time_series_prob = 0.5 if mode == tf.estimator.ModeKeys.TRAIN else 0
     shuffle_filenames = (mode == tf.estimator.ModeKeys.TRAIN)
-    dataset = dataset_ops.build_dataset(
+    return dataset_ops.build_dataset(
         file_pattern=self._file_pattern,
         input_config=self._input_config,
         batch_size=params["batch_size"],
@@ -76,8 +76,6 @@ class _InputFn(object):
         shuffle_values_buffer=self._shuffle_values_buffer,
         repeat=self._repeat,
         use_tpu=use_tpu)
-
-    return dataset
 
 
 def create_input_fn(file_pattern,
@@ -154,22 +152,17 @@ class _ModelFn(object):
           metrics.create_metric_fn(model)
           if use_tpu else metrics.create_metrics(model))
 
-    if use_tpu:
-      estimator = tf.contrib.tpu.TPUEstimatorSpec(
+    return tf.contrib.tpu.TPUEstimatorSpec(
           mode=mode,
           predictions=model.predictions,
           loss=model.total_loss,
           train_op=train_op,
-          eval_metrics=eval_metrics)
-    else:
-      estimator = tf.estimator.EstimatorSpec(
+          eval_metrics=eval_metrics) if use_tpu else tf.estimator.EstimatorSpec(
           mode=mode,
           predictions=model.predictions,
           loss=model.total_loss,
           train_op=train_op,
           eval_metric_ops=eval_metrics)
-
-    return estimator
 
 
 def create_model_fn(model_class, hparams, use_tpu=False):
@@ -232,7 +225,7 @@ def create_estimator(model_class,
 
   if use_tpu:
     eval_batch_size = eval_batch_size or hparams.batch_size
-    estimator = tf.contrib.tpu.TPUEstimator(
+    return tf.contrib.tpu.TPUEstimator(
         model_fn=model_fn,
         model_dir=model_dir,
         config=run_config,
@@ -243,10 +236,8 @@ def create_estimator(model_class,
     if eval_batch_size is not None:
       raise ValueError("eval_batch_size can only be specified for TPU.")
 
-    estimator = tf.estimator.Estimator(
+    return tf.estimator.Estimator(
         model_fn=model_fn,
         model_dir=model_dir,
         config=run_config,
         params={"batch_size": hparams.batch_size})
-
-  return estimator

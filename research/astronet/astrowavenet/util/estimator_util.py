@@ -88,14 +88,10 @@ class _ModelFn(object):
       optimizer = training.create_optimizer(hparams, learning_rate, use_tpu)
       train_op = training.create_train_op(model, optimizer)
 
-    if use_tpu:
-      estimator = tf.contrib.tpu.TPUEstimatorSpec(
-          mode=mode, loss=model.total_loss, train_op=train_op)
-    else:
-      estimator = tf.estimator.EstimatorSpec(
-          mode=mode, loss=model.total_loss, train_op=train_op)
-
-    return estimator
+    return (tf.contrib.tpu.TPUEstimatorSpec(
+        mode=mode, loss=model.total_loss, train_op=train_op)
+            if use_tpu else tf.estimator.EstimatorSpec(
+                mode=mode, loss=model.total_loss, train_op=train_op))
 
 
 def create_model_fn(model_class, hparams, use_tpu=False):
@@ -158,7 +154,7 @@ def create_estimator(model_class,
 
   if use_tpu:
     eval_batch_size = eval_batch_size or hparams.batch_size
-    estimator = tf.contrib.tpu.TPUEstimator(
+    return tf.contrib.tpu.TPUEstimator(
         model_fn=model_fn,
         model_dir=model_dir,
         config=run_config,
@@ -169,10 +165,8 @@ def create_estimator(model_class,
     if eval_batch_size is not None:
       raise ValueError("eval_batch_size can only be specified for TPU.")
 
-    estimator = tf.estimator.Estimator(
+    return tf.estimator.Estimator(
         model_fn=model_fn,
         model_dir=model_dir,
         config=run_config,
         params={"batch_size": hparams.batch_size})
-
-  return estimator

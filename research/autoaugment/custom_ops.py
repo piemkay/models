@@ -32,13 +32,12 @@ arg_scope = tf.contrib.framework.arg_scope
 
 def variable(name, shape, dtype, initializer, trainable):
   """Returns a TF variable with the passed in specifications."""
-  var = tf.get_variable(
+  return tf.get_variable(
       name,
       shape=shape,
       dtype=dtype,
       initializer=initializer,
       trainable=trainable)
-  return var
 
 
 def global_avg_pool(x, scope=None):
@@ -58,10 +57,9 @@ def global_avg_pool(x, scope=None):
 
 def zero_pad(inputs, in_filter, out_filter):
   """Zero pads `input` tensor to have `out_filter` number of filters."""
-  outputs = tf.pad(inputs, [[0, 0], [0, 0], [0, 0],
+  return tf.pad(inputs, [[0, 0], [0, 0], [0, 0],
                             [(out_filter - in_filter) // 2,
                              (out_filter - in_filter) // 2]])
-  return outputs
 
 
 @tf.contrib.framework.add_arg_scope
@@ -134,9 +132,8 @@ def conv2d(inputs,
         initializer=weights_initializer,
         trainable=True)
     strides = stride_arr(stride, stride)
-    outputs = tf.nn.conv2d(
+    return tf.nn.conv2d(
         inputs, weights, strides, padding='SAME', data_format='NHWC')
-    return outputs
 
 
 @tf.contrib.framework.add_arg_scope
@@ -178,8 +175,7 @@ def fc(inputs,
         dtype=tf.float32,
         initializer=bias_initializer,
         trainable=True)
-    outputs = tf.nn.xw_plus_b(inputs, weights, biases)
-    return outputs
+    return tf.nn.xw_plus_b(inputs, weights, biases)
 
 
 @tf.contrib.framework.add_arg_scope

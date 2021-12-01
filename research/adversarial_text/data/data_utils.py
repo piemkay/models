@@ -176,8 +176,7 @@ class SequenceWrapper(object):
     return timestep
 
   def __iter__(self):
-    for timestep in self._timesteps:
-      yield timestep
+    yield from self._timesteps
 
   def __len__(self):
     return len(self._timesteps)

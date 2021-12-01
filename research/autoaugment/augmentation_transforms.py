@@ -57,8 +57,7 @@ def zero_pad_and_crop(img, amount=4):
              img.shape[1] + amount, :] = img
   top = np.random.randint(low=0, high=2 * amount)
   left = np.random.randint(low=0, high=2 * amount)
-  new_img = padded_img[top:top + img.shape[0], left:left + img.shape[1], :]
-  return new_img
+  return padded_img[top:top + img.shape[0], left:left + img.shape[1], :]
 
 
 def create_cutout_mask(img_height, img_width, num_channels, size):
@@ -365,8 +364,7 @@ translate_y = TransformT('TranslateY', _translate_y_impl)
 def _crop_impl(pil_img, level, interpolation=Image.BILINEAR):
   """Applies a crop to `pil_img` with the size depending on the `level`."""
   cropped = pil_img.crop((level, level, IMAGE_SIZE - level, IMAGE_SIZE - level))
-  resized = cropped.resize((IMAGE_SIZE, IMAGE_SIZE), interpolation)
-  return resized
+  return cropped.resize((IMAGE_SIZE, IMAGE_SIZE), interpolation)
 
 
 crop_bilinear = TransformT('CropBilinear', _crop_impl)

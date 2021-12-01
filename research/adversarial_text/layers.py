@@ -253,13 +253,8 @@ def predictions(logits):
   """Class prediction from logits."""
   inner_dim = logits.get_shape().as_list()[-1]
   with tf.name_scope('predictions'):
-    # For binary classification
-    if inner_dim == 1:
-      pred = tf.cast(tf.greater(tf.squeeze(logits, -1), 0.), tf.int64)
-    # For multi-class classification
-    else:
-      pred = tf.argmax(logits, 2)
-    return pred
+    return (tf.cast(tf.greater(tf.squeeze(logits, -1), 0.0), tf.int64)
+            if inner_dim == 1 else tf.argmax(logits, 2))
 
 
 def _num_labels(weights):

@@ -26,10 +26,10 @@ import data_provider
 
 
 def create_fake_charset(num_char_classes):
-  charset = {}
-  for i in xrange(num_char_classes):
-    charset[i] = string.printable[i % len(string.printable)]
-  return charset
+  return {
+      i: string.printable[i % len(string.printable)]
+      for i in xrange(num_char_classes)
+  }
 
 
 class ModelTest(tf.test.TestCase):

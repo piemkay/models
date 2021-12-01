@@ -64,11 +64,10 @@ def waveform_to_examples(data, sample_rate):
       vggish_params.EXAMPLE_WINDOW_SECONDS * features_sample_rate))
   example_hop_length = int(round(
       vggish_params.EXAMPLE_HOP_SECONDS * features_sample_rate))
-  log_mel_examples = mel_features.frame(
+  return mel_features.frame(
       log_mel,
       window_length=example_window_length,
       hop_length=example_hop_length)
-  return log_mel_examples
 
 
 def wavfile_to_examples(wav_file):

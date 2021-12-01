@@ -120,7 +120,7 @@ def _get_finetuning_init_fn(variable_averages):
 
   filtered_model_variables = [
       v for v in tf.contrib.framework.get_model_variables()
-      if not any([v.op.name.startswith(e) for e in exclusions])
+      if not any(v.op.name.startswith(e) for e in exclusions)
   ]
 
   if variable_averages:

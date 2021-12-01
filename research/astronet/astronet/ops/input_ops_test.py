@@ -35,12 +35,10 @@ class InputOpsTest(tf.test.TestCase):
       features: Dictionary of feature placeholders of the format returned by
         input_ops.build_feature_placeholders().
     """
-    actual_shapes = {}
-    for feature_type in features:
-      actual_shapes[feature_type] = {
+    actual_shapes = {feature_type: {
           feature: tensor.shape.as_list()
           for feature, tensor in features[feature_type].items()
-      }
+      } for feature_type in features}
     self.assertDictEqual(expected_shapes, actual_shapes)
 
   def testBuildFeaturePlaceholders(self):

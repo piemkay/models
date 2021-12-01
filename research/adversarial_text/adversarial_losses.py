@@ -232,5 +232,4 @@ def _kl_divergence_with_logits(q_logits, p_logits, weights):
   kl.get_shape().assert_has_rank(2)
   weights.get_shape().assert_has_rank(2)
 
-  loss = tf.identity(tf.reduce_sum(weights * kl) / num_labels, name='kl')
-  return loss
+  return tf.identity(tf.reduce_sum(weights * kl) / num_labels, name='kl')

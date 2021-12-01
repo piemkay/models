@@ -72,13 +72,10 @@ def fixed_padding(inputs, kernel_size, data_format):
   pad_beg = pad_total // 2
   pad_end = pad_total - pad_beg
 
-  if data_format == 'channels_first':
-    padded_inputs = tf.pad(inputs, [[0, 0], [0, 0],
-                                    [pad_beg, pad_end], [pad_beg, pad_end]])
-  else:
-    padded_inputs = tf.pad(inputs, [[0, 0], [pad_beg, pad_end],
-                                    [pad_beg, pad_end], [0, 0]])
-  return padded_inputs
+  return (
+      tf.pad(inputs, [[0, 0], [0, 0], [pad_beg, pad_end], [pad_beg, pad_end]])
+      if data_format == 'channels_first' else tf.pad(
+          inputs, [[0, 0], [pad_beg, pad_end], [pad_beg, pad_end], [0, 0]]))
 
 
 def conv2d_fixed_padding(inputs, filters, kernel_size, strides, data_format):
@@ -459,11 +456,10 @@ class Model(object):
       A variable which is cast to fp16 if necessary.
     """
 
-    if dtype in CASTABLE_TYPES:
-      var = getter(name, shape, tf.float32, *args, **kwargs)
-      return tf.cast(var, dtype=dtype, name=name + '_cast')
-    else:
+    if dtype not in CASTABLE_TYPES:
       return getter(name, shape, dtype, *args, **kwargs)
+    var = getter(name, shape, tf.float32, *args, **kwargs)
+    return tf.cast(var, dtype=dtype, name=name + '_cast')
 
   def _model_variable_scope(self):
     """Returns a variable scope that the model should be created under.

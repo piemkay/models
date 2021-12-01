@@ -70,10 +70,7 @@ def setup_arg_scopes(is_training):
       'is_training': is_training,
   }
 
-  scopes = []
-
-  scopes.append(arg_scope([ops.batch_norm], **batch_norm_params))
-  return scopes
+  return [arg_scope([ops.batch_norm], **batch_norm_params)]
 
 
 def build_model(inputs, num_classes, is_training, hparams):
@@ -129,10 +126,7 @@ class CifarModel(object):
 
   def _setup_images_and_labels(self):
     """Sets up image and label placeholders for the cifar model."""
-    if FLAGS.dataset == 'cifar10':
-      self.num_classes = 10
-    else:
-      self.num_classes = 100
+    self.num_classes = 10 if FLAGS.dataset == 'cifar10' else 100
     self.images = tf.placeholder(tf.float32, [self.batch_size, 32, 32, 3])
     self.labels = tf.placeholder(tf.float32,
                                  [self.batch_size, self.num_classes])
@@ -321,8 +315,7 @@ class CifarModelTrainer(object):
       curr_step = self.session.run(m.global_step)
     total_steps = steps_per_epoch * hparams.num_epochs
     epochs_left = (total_steps - curr_step) // steps_per_epoch
-    starting_epoch = hparams.num_epochs - epochs_left
-    return starting_epoch
+    return hparams.num_epochs - epochs_left
 
   def _run_training_loop(self, m, curr_epoch):
     """Trains the cifar model `m` for one epoch."""

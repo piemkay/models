@@ -62,11 +62,7 @@ def sample_with_exclusion(num_items, positive_set, n, replacement=True):
 
   # If sampling is performed with replacement, candidates are appended.
   # Otherwise, they should be added with a set union to remove duplicates.
-  if replacement:
-    negatives = []
-  else:
-    negatives = set()
-
+  negatives = [] if replacement else set()
   while len(negatives) < n:
     negative_candidates = np.random.randint(
         low=0, high=num_items, size=(n_attempt,))

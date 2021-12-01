@@ -86,7 +86,7 @@ def buildbracemap(code):
   for position, command in enumerate(code):
     if command == '[':
       bracestack.append(position)
-    if command == ']':
+    elif command == ']':
       if not bracestack:  # Unmatched closing brace.
         bracemap[position] = position  # Don't jump to any position.
         correct_syntax = False

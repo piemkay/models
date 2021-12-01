@@ -31,17 +31,14 @@ def create_learning_rate(hparams, global_step):
   Returns:
     A learning rate Tensor.
   """
-  if hparams.get("learning_rate_decay_factor"):
-    learning_rate = tf.train.exponential_decay(
-        learning_rate=float(hparams.learning_rate),
-        global_step=global_step,
-        decay_steps=hparams.learning_rate_decay_steps,
-        decay_rate=hparams.learning_rate_decay_factor,
-        staircase=hparams.learning_rate_decay_staircase)
-  else:
-    learning_rate = tf.constant(hparams.learning_rate)
-
-  return learning_rate
+  return (tf.train.exponential_decay(
+      learning_rate=float(hparams.learning_rate),
+      global_step=global_step,
+      decay_steps=hparams.learning_rate_decay_steps,
+      decay_rate=hparams.learning_rate_decay_factor,
+      staircase=hparams.learning_rate_decay_staircase,
+  ) if hparams.get("learning_rate_decay_factor") else tf.constant(
+      hparams.learning_rate))
 
 
 def create_optimizer(hparams, learning_rate, use_tpu=False):

@@ -48,7 +48,7 @@ def get_default_args():
 def get_default_baseline_args():
   batch_norm_param = {'center': True, 'scale': True,
                       'activation_fn':tf.nn.relu}
-  arch_args = utils.Foo(
+  return utils.Foo(
       pred_neurons=[], goal_embed_neurons=[], img_embed_neurons=[],
       batch_norm_param=batch_norm_param, dim_reduce_neurons=64, combine_type='',
       encoder='resnet_v2_50', action_sample_type='sample',
@@ -57,27 +57,24 @@ def get_default_baseline_args():
       isd_k=750., use_visit_count=False, lstm_output=False, lstm_ego=False,
       lstm_img=False, fc_dropout=0.0, embed_goal_for_state=False,
       lstm_output_init_state_from_goal=False)
-  return arch_args
 
 def get_arch_vars(arch_str):
-  if arch_str == '': vals = []
-  else: vals = arch_str.split('_')
-  
+  vals = [] if arch_str == '' else arch_str.split('_')
   ks = ['ver', 'lstm_dim', 'dropout']
-  
+
   # Exp Ver
   if len(vals) == 0: vals.append('v0')
   # LSTM dimentsions
   if len(vals) == 1: vals.append('lstm2048')
   # Dropout
   if len(vals) == 2: vals.append('noDO')
-  
+
   assert(len(vals) == 3)
-  
+
   vars = utils.Foo()
   for k, v in zip(ks, vals):
     setattr(vars, k, v)
-  
+
   logging.error('arch_vars: %s', vars)
   return vars
 

@@ -119,9 +119,7 @@ class BigQueryUploader(object):
         data.
     """
     with tf.gfile.GFile(metric_json_file) as f:
-      metrics = []
-      for line in f:
-        metrics.append(json.loads(line.strip()))
+      metrics = [json.loads(line.strip()) for line in f]
       self.upload_benchmark_metric_json(
           dataset_name, table_name, run_id, metrics)
 
